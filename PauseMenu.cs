@@ -1,69 +1,62 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
-public class PlayerMovement : MonoBehaviour
+
+public class PauseMenu : MonoBehaviour
 {
-    private Rigidbody rb2;
-    public float speed = 1;
-    public bool isStarting = true;
-    public GameObject gameOverMenu;
-    public PauseMenu pause_m;
-    public void Start()
+    private bool isGamePaused = false;
+
+    public bool isGameOver = false;
+
+    public GameObject pauseMenu;
+    private void Update()
     {
-        void Start()
+        if (Input.GetKeyDown(KeyCode.P) && !isGameOver)
         {
-            isStarting = false;
-        }
-    }
-    public void Update()
-    {
-
-        if (Input.GetKey(KeyCode.F))
-        {
-            isStarting = true;
-        }
-        rb2 = GetComponent<Rigidbody>();
-
-        if (isStarting)
-        {
-            // A tuşuna basınca sola hareket eder.
-
-            rb2.AddForce(Vector3.forward * speed * 0.1f);
-
-            if (Input.GetKey(KeyCode.A))
+            if (!isGamePaused)
             {
-                rb2.AddForce(Vector3.left * speed);
-
+                Pause();
             }
-
-            // D tuşuna basınca sağa hareket eder.
-
-            if (Input.GetKey(KeyCode.D))
+            else
             {
-                rb2.AddForce(Vector3.right * speed);
+                Resume();
             }
-
         }
-
-
     }
-    private void OnTriggerEnter(Collider other)
+
+    private void Pause()
     {
-        if (other.gameObject.tag == "ExitTriggerBox")
-        {
+        //Set Time Scale
+        Time.timeScale = 0;
 
-              Destroy(gameObject);
+        //Pause Menu
+        pauseMenu.SetActive(true);
 
-            //Enable Game Over Menu
-            gameOverMenu.SetActive(true);
-
-            //Disable Pause Menu
-            pause_m.isGameOver = true;
-
-
-        }
+        //Set Boolean
+        isGamePaused = true;
     }
 
+    private void Resume()
+    {
+        //Set Time Scale
+        Time.timeScale = 1;
 
+        //Pause Menu
+        pauseMenu.SetActive(false);
+
+        //Set Boolean
+        isGamePaused = false;
+    }
+
+    public void ExitGame()
+    {
+        Application.Quit();
+    }
+
+    public void OpenMainMenu()
+    {
+        SceneManager.LoadScene("MainMenu");
+    }
 }
